@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2008773bf662e55419cb4fa3116a4bce, type: 3}
+  m_Name: Quarry
+  m_EditorClassIdentifier: 
+  Name: Quarry
+  Description: Produces stone for your many rocky needs
+  StoneCost: 100
+  WoodCost: 200
+  GoldCost: 0
+  ProductionTime: 6
+  Icon: {fileID: 21300000, guid: ae97753c8a4d8d540aa0949d1a233568, type: 3}
+  Prefab: {fileID: 95702286730606941, guid: 89f851da51b614247a650b784217f00b, type: 3}
+  TerrainType: 0
+  BiomeType: 1

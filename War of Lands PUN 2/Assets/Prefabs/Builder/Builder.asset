@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a46fdbbca83176a4f868efe3fcb38dcd, type: 3}
+  m_Name: Builder
+  m_EditorClassIdentifier: 
+  Name: Builder
+  Description: Builders are used to construct new buildings.
+  StoneCost: 25
+  WoodCost: 25
+  GoldCost: 10
+  ProductionTime: 2
+  Icon: {fileID: 21300000, guid: e05bc383796f67a48a171a24977c9eab, type: 3}
+  Prefab: {fileID: 1951999500183624979, guid: dddc4b5176edcfa41bde3ce2c5454dda, type: 3}
