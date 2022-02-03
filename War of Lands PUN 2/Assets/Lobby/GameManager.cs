@@ -31,6 +31,11 @@ public class GameManager : MonoBehaviour
     [PunRPC]
     public void MyTurn(int playerID)
     {
+        if(PhotonNetwork.MasterClient.ActorNumber == playerID)
+        {
+            UIControl.Instance.IncrementTurns();
+        }
+
         if (playerID == PhotonNetwork.LocalPlayer.ActorNumber)
         {
             PlayerInteraction.Instance.IsTurn = true;
@@ -70,6 +75,7 @@ public class GameManager : MonoBehaviour
         if (headQuarters.OwnerID == PhotonNetwork.LocalPlayer.ActorNumber)
         {
             MyColor = new Color(color[0], color[1], color[2], 255);
+            TeamNum = teamNum;
         }
 
         foreach (Transform tf in headQuarters.Model.transform.Find("Colours"))
@@ -84,10 +90,28 @@ public class GameManager : MonoBehaviour
     }
 
     [PunRPC]
-    public void SetupBuilding(int profileNum, int builderID, float[] color)
+    public void SetupBuilding(int buildingNum, int ownerID, int teamNum, int currentPosID, float[] color, int builderID)
     {
-        PhotonNetwork.GetPhotonView(builderID).GetComponent<BuilderCommands>()
-            .StartBuild(profileNum, builderID, new Color(color[0], color[1], color[2], 255)); ;
+        UnitSelectable unit = PhotonNetwork.GetPhotonView(buildingNum).GetComponent<UnitSelectable>();
+
+        unit.OwnerID = ownerID;
+        unit.TeamNum = teamNum;
+        unit.CurrentPos = Board[currentPosID];
+
+        if (unit.Model.transform.Find("Colours"))
+        {
+            foreach (Transform tf in unit.Model.transform.Find("Colours"))
+            {
+                tf.GetComponent<Renderer>().material.color = new Color(color[0], color[1], color[2], 255);
+            }
+        }
+
+        Board[currentPosID].Building = unit;
+
+        if(ownerID == PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            PhotonNetwork.GetPhotonView(builderID).GetComponent<BuilderCommands>().Build();
+        }
     }
 
     [PunRPC]

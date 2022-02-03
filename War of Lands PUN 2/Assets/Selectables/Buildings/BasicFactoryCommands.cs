@@ -25,13 +25,12 @@ public class BasicFactoryCommands : UnitSelectable
             TeamNum, CurrentPos.gameObject.GetPhotonView().ViewID, GameManager.Instance.MyColorToArray());
     }
 
-    [PunRPC]
     public void AddToQueue(int unitNum)
     {
         if (UIControl.Instance.CanAfford(-Profiles[unitNum].WoodCost, -Profiles[unitNum].StoneCost, -Profiles[unitNum].GoldCost)) 
         {
             BuildQueue.Add(unitNum);
-     //       ClientSend.UpdateResources(-Profiles[unitNum].WoodCost, -Profiles[unitNum].StoneCost, -Profiles[unitNum].GoldCost); 
+            UIControl.Instance.UpdateResources(-Profiles[unitNum].WoodCost, -Profiles[unitNum].StoneCost, -Profiles[unitNum].GoldCost); 
         }
     }
 
@@ -45,7 +44,10 @@ public class BasicFactoryCommands : UnitSelectable
 
                 if (Timer >= Profiles[BuildQueue[0]].ProductionTime)
                 {
-                    //     ClientSend.CreateUnit(CurrentPos.ViewID, ViewID, BuildQueue[0]);
+                    UnitSelectable unitSelectable = PhotonNetwork.Instantiate(Profiles[ BuildQueue[0]].Prefab.name, CurrentPos.transform.position, Quaternion.identity).GetComponent<UnitSelectable>();
+                    PlayerInteraction.Instance.MyUnits.Add(unitSelectable.gameObject.GetPhotonView());
+
+                    GameManager.Instance.gameObject.GetPhotonView().RPC("SetupUnit", RpcTarget.All, unitSelectable.gameObject.GetPhotonView().ViewID, OwnerID, TeamNum, CurrentPos.ID, GameManager.Instance.MyColorToArray());
                     Timer = 0;
                     BuildQueue.RemoveAt(0);
                 }

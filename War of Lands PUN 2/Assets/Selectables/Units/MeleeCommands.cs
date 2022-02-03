@@ -84,7 +84,7 @@ public class MeleeCommands : UnitSelectable
 
         if (CanAttack(hexPos) == 1)
         {
-            Move(hexPos);
+            Move(hexPos.ID);
         }
     }
 
@@ -164,8 +164,10 @@ public class MeleeCommands : UnitSelectable
     }
 
     [PunRPC]
-    public void Move(HexPos hexPos)
+    public void Move(int hexPosID)
     {
+        HexPos hexPos = GameManager.Instance.Board[hexPosID];
+
         transform.rotation = Quaternion.Euler(0, Quaternion.LookRotation(hexPos.transform.position - transform.position).eulerAngles.y, 0);
         CurrentMoves += 1;
 

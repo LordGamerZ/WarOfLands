@@ -21,6 +21,7 @@ public class Building : MonoBehaviour
     private void Awake()
     {
         Selectable = GetComponent<UnitSelectable>();
+        Selectable.CurrentHealth = 0;
         StartHeight = Mathf.Abs(Mesh.transform.localPosition.y);
     }
 
@@ -40,8 +41,7 @@ public class Building : MonoBehaviour
     }
 
     public bool Build()
-    {
-        Selectable.CurrentHealth += Selectable.MaxHealth * (1 / BuildTime);
+    {        
         TotalTime += 1;
         gameObject.GetPhotonView().RPC("ChangeMeshPos", RpcTarget.All, Mesh.transform.localPosition.y + (StartHeight * (1 / BuildTime)));
 
@@ -68,20 +68,7 @@ public class Building : MonoBehaviour
     [PunRPC]
     public void ChangeMeshPos(float yPos)
     {
+        Selectable.CurrentHealth += Selectable.MaxHealth * (1 / BuildTime);
         Mesh.transform.localPosition = new Vector3(Mesh.transform.localPosition.x, yPos, Mesh.transform.localPosition.z);
-    }
-
-    public void ChangeHealth(float amount)
-    {
-        if (amount < 0)
-        {
-            Selectable.CurrentHealth -= amount;
-
-            if (Selectable.CurrentHealth <= 0)
-            {
-                Builder.IsBuilding = false;
-                Destroy(gameObject);
-            }
-        }
     }
 }

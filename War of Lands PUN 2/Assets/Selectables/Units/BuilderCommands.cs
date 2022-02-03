@@ -55,7 +55,7 @@ public class BuilderCommands : UnitSelectable
                 {
                     if (UIControl.Instance.CanAfford(-Profiles[buildingNum].WoodCost, -Profiles[buildingNum].StoneCost, -Profiles[buildingNum].GoldCost))
                     {
-                        GameManager.Instance.gameObject.GetPhotonView().RPC("SetupBuilding", RpcTarget.All, buildingNum, gameObject.GetPhotonView().ViewID, GameManager.Instance.MyColorToArray());
+                        StartBuild(buildingNum);
                         UIControl.Instance.UpdateResources(-Profiles[buildingNum].WoodCost, -Profiles[buildingNum].StoneCost, -Profiles[buildingNum].GoldCost);
                         IsBuilding = true;
                     }
@@ -64,20 +64,15 @@ public class BuilderCommands : UnitSelectable
         }
     }
 
-    public void StartBuild(int profileNum, int newViewID, Color color)
+    public void StartBuild(int profileNum)
     {
-        UnitSelectable unitSelectable = Instantiate(Profiles[profileNum].Prefab, CurrentPos.transform.position, Quaternion.identity).GetComponent<UnitSelectable>();
-        unitSelectable.OwnerID = OwnerID;
-        unitSelectable.TeamNum = TeamNum;
+        UnitSelectable unitSelectable = PhotonNetwork.Instantiate(Profiles[profileNum].Prefab.name, CurrentPos.transform.position, Quaternion.identity).GetComponent<UnitSelectable>();
+        PlayerInteraction.Instance.MyUnits.Add(unitSelectable.gameObject.GetPhotonView());
 
-        unitSelectable.CurrentPos = CurrentPos;
+        GameManager.Instance.gameObject.GetPhotonView().RPC("SetupBuilding", RpcTarget.All, unitSelectable.gameObject.GetPhotonView().ViewID, OwnerID, TeamNum, CurrentPos.ID, GameManager.Instance.MyColorToArray(), gameObject.GetPhotonView().ViewID);
 
         Building building = unitSelectable.GetComponent<Building>();
-        building.SetBuilding(Profiles[profileNum].ProductionTime, this, color);
-
-        CurrentPos.Building = unitSelectable;
-
-        Build();
+        building.SetBuilding(Profiles[profileNum].ProductionTime, this, GameManager.Instance.MyColor);
     }
 
     public void Build()

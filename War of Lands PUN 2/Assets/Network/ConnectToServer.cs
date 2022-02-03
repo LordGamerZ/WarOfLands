@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class ConnectToServer : MonoBehaviourPunCallbacks
 {
@@ -17,6 +18,7 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
         }
         else
         {
+            PhotonNetwork.Disconnect();
             Instance = this;
         }
     }
@@ -42,6 +44,7 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
 
     public void Connect()
     {
+        PhotonNetwork.NickName = "Ghest";
         PhotonNetwork.ConnectUsingSettings();
     }
 

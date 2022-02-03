@@ -23,6 +23,8 @@ public class BasicHeadQuarterCommands : BasicFactoryCommands
     {
         if (OwnerID == PhotonNetwork.LocalPlayer.ActorNumber)
         {
+            PlayerInteraction.Instance.MyUnits.Add(gameObject.GetPhotonView());
+
             PlayerInteraction.Instance.MyBase = this;
             PlayerInteraction.Instance.transform.position = new Vector3(transform.position.x, 30, transform.position.z);
 
@@ -45,9 +47,10 @@ public class BasicHeadQuarterCommands : BasicFactoryCommands
 
             for (int i = 0; i < hexPositions.Count; i++)
             {
-                int builder = PhotonNetwork.Instantiate(Profiles[0].Prefab.name, hexPositions[i].transform.position, Quaternion.identity)
-                    .GetPhotonView().ViewID;
-                GameManager.Instance.gameObject.GetPhotonView().RPC("SetupUnit", RpcTarget.All, builder, PhotonNetwork.LocalPlayer.ActorNumber, TeamNum, hexPositions[i].ID, GameManager.Instance.MyColorToArray());
+                PhotonView builder = PhotonNetwork.Instantiate(Profiles[0].Prefab.name, hexPositions[i].transform.position, Quaternion.identity)
+                    .GetPhotonView();
+                PlayerInteraction.Instance.MyUnits.Add(builder);
+                GameManager.Instance.gameObject.GetPhotonView().RPC("SetupUnit", RpcTarget.All, builder.ViewID, PhotonNetwork.LocalPlayer.ActorNumber, TeamNum, hexPositions[i].ID, GameManager.Instance.MyColorToArray());
             }
         }
     }

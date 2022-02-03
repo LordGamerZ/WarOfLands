@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Currently has no use
 public enum Terrains
 {
     Land,
@@ -9,6 +10,7 @@ public enum Terrains
     Amphibious
 }
 
+//Decides what buildings can be built on a tile
 public enum Biomes
 {
     Plains,

@@ -14,6 +14,8 @@ public class PlayerInteraction : MonoBehaviour
 {
     public static PlayerInteraction Instance;
 
+    public List<PhotonView> MyUnits;
+
     public Camera MainCamera;
     public BasicHeadQuarterCommands MyBase;
 
@@ -32,6 +34,8 @@ public class PlayerInteraction : MonoBehaviour
             Instance = this;
             Selected = null;
             IsTurn = false;
+
+            MyUnits = new();
 
             gameObject.SetActive(false);
         }
@@ -253,29 +257,12 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    public void RemoveForest(int hexViewID)
-    {
-
-    }
-
-    public void RemovePlayer(int clientID)
-    {
-
-    }
-
     public void NextTurn()
     {
-
-    }
-
-    public void UnitAttack(int unitViewID, int hexPosID)
-    {
-
-    }
-
-    public void MoveUnit(int unitViewID, int hexPosID)
-    {
-
+        for (int i = 0; i < MyUnits.Count; i++)
+        {
+            MyUnits[i].SendMessage("NextTurn");
+        }
     }
 
     public HexPos ReturnHexPos()

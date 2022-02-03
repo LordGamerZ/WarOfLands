@@ -321,7 +321,7 @@ public class UIControl : MonoBehaviour
     }
 
     //Update turn counter in UI
-    public void UpdateTurns()
+    public void IncrementTurns()
     {
         NumTurns += 1;
         TurnDisplay.text = "Turn " + NumTurns.ToString();

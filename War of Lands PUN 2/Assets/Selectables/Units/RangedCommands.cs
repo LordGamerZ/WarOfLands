@@ -188,8 +188,10 @@ public class RangedCommands : UnitSelectable
         return 0;
     }
 
-    public void Move(HexPos hexPos)
+    [PunRPC]
+    public void Move(int hexPosID)
     {
+        HexPos hexPos = GameManager.Instance.Board[hexPosID];
         if (RangedType == RangedTypes.Archer || (RangedType == RangedTypes.Catapult && hexPos.BiomeType != Biomes.Forest))
         {
             transform.rotation = Quaternion.Euler(0, Quaternion.LookRotation(hexPos.transform.position - transform.position).eulerAngles.y, 0);

@@ -51,24 +51,22 @@ public class LobbyController : MonoBehaviourPunCallbacks
         {
             Instance = this;
 
-            Sizes = new int[4] { 25, 50, 75, 100 };
+            Sizes = new int[3] { 25, 50, 75};
             List<TMP_Dropdown.OptionData> boardOptions = new()
             {
                 new TMP_Dropdown.OptionData("Small (25 x 25)"),
                 new TMP_Dropdown.OptionData("Medium (50 x 50)"),
                 new TMP_Dropdown.OptionData("Large (75 x 75"),
-                new TMP_Dropdown.OptionData("Too Big (100 x 100")
             };
             BoardSizes.AddOptions(boardOptions);
             BoardSizes.value = 1;
 
-            Times = new int[4] { 30, 60, 90, 120 };
+            Times = new int[3] { 30, 60, 90};
             List<TMP_Dropdown.OptionData> timeOptions = new()
             {
                 new TMP_Dropdown.OptionData("30 seconds"),
                 new TMP_Dropdown.OptionData("60 seconds"),
                 new TMP_Dropdown.OptionData("90 seconds"),
-                new TMP_Dropdown.OptionData("120 seconds"),
             };
             TurnTimes.AddOptions(timeOptions);
             BoardSizes.value = 1;
@@ -76,6 +74,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
         MyDisplay = PhotonNetwork.Instantiate("PlayerDisplayPrefab", Vector3.zero, Quaternion.identity).GetComponent<PlayerDisplay>();
         MyDisplay.IsMine = true;
+        MyDisplay.gameObject.GetPhotonView().RPC("SetUsername", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.NickName);
     }
 
     public void SendChat()
@@ -106,8 +105,21 @@ public class LobbyController : MonoBehaviourPunCallbacks
     {
         int[] playerIDs = new int[PhotonNetwork.CurrentRoom.Players.Keys.Count];
         BasePositions = new int[PhotonNetwork.PlayerList.Length];
-        int[] teamNums = new int[5];
+        int[] teamNums = new int[4];
         int[] boardTypes = new int[Sizes[BoardSizes.value] * Sizes[BoardSizes.value]];
+
+        for (int i = 0; i < PlayersPanel.childCount; i++)
+        {
+            PlayerDisplay playerDisplay = PlayersPanel.GetChild(i).GetComponent<PlayerDisplay>();
+            if (playerDisplay.IsMine)
+            {
+                teamNums[i] = int.Parse(playerDisplay.MyTeamNum.options[playerDisplay.MyTeamNum.value].text);
+            }
+            else
+            {
+                teamNums[i] = int.Parse(playerDisplay.TeamNum.text);
+            }
+        }
 
         int[] chances = new int[20] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2 };
 
@@ -140,7 +152,8 @@ public class LobbyController : MonoBehaviourPunCallbacks
             GameManager.Instance.gameObject.GetPhotonView().RPC("SetInfo", RpcTarget.All, Times[TurnTimes.value], players);
         }
 
-        PlayerInteraction.Instance.IsTurn = true;
+        GameManager.Instance.gameObject.GetPhotonView().RPC("MyTurn", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+        UIControl.Instance.ChangeArrowSprite();
         PhotonNetwork.Destroy(gameObject.GetPhotonView());
     }
 

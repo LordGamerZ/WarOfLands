@@ -32,6 +32,12 @@ public class PlayerDisplay : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    public void SetUsername(string username)
+    {
+        NameText.text = username;
+    }
+
     public void ChangeMyDisplay()
     {
         if(IsMine)
