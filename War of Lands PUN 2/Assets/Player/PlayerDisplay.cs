@@ -12,17 +12,16 @@ public class PlayerDisplay : MonoBehaviour
     public TMP_Dropdown MyTeamNum;
     public TextMeshProUGUI TeamNum;
     public bool IsMine;
+    public LobbyController LobbyControl;
 
     private void Awake()
     {
-        transform.parent = LobbyController.Instance.PlayersPanel;
-        LayoutRebuilder.MarkLayoutForRebuild(LobbyController.Instance.PlayersPanel.GetComponent<RectTransform>());
         IsMine = false;
     }
 
     private void Start()
     {
-        if(IsMine)
+        if (IsMine)
         {
             TeamNum.transform.parent.gameObject.SetActive(false); 
         }
@@ -33,16 +32,19 @@ public class PlayerDisplay : MonoBehaviour
     }
 
     [PunRPC]
-    public void SetUsername(string username)
+    public void SetUsername(string username, int lobbyControllerID)
     {
         NameText.text = username;
+        LobbyControl = PhotonNetwork.GetPhotonView(lobbyControllerID).GetComponent<LobbyController>();
+        transform.parent = LobbyControl.PlayersPanel;
+        LayoutRebuilder.MarkLayoutForRebuild(LobbyControl.PlayersPanel.GetComponent<RectTransform>());
     }
 
     public void ChangeMyDisplay()
     {
         if(IsMine)
-        {
-            LobbyController.Instance.ChangeMyTeamNum();
+        { 
+            LobbyControl.ChangeMyTeamNum();
         }
     }
 }

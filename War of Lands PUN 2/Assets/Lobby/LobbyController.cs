@@ -9,13 +9,13 @@ using UnityEngine.SceneManagement;
 
 public class LobbyController : MonoBehaviourPunCallbacks
 {
-    public static LobbyController Instance;
-
     public List<Color> Colors;
 
     public GameObject HexForest;
     public GameObject HexPlains;
     public GameObject HexHills;
+
+    public List<int> BoardTypes;
 
     //Player Display Variables
     public Transform PlayersPanel;
@@ -49,8 +49,6 @@ public class LobbyController : MonoBehaviourPunCallbacks
         }
         else
         {
-            Instance = this;
-
             Sizes = new int[3] { 25, 50, 75};
             List<TMP_Dropdown.OptionData> boardOptions = new()
             {
@@ -72,9 +70,10 @@ public class LobbyController : MonoBehaviourPunCallbacks
             BoardSizes.value = 1;
         }
 
+        BoardTypes = new();
         MyDisplay = PhotonNetwork.Instantiate("PlayerDisplayPrefab", Vector3.zero, Quaternion.identity).GetComponent<PlayerDisplay>();
         MyDisplay.IsMine = true;
-        MyDisplay.gameObject.GetPhotonView().RPC("SetUsername", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.NickName);
+        MyDisplay.gameObject.GetPhotonView().RPC("SetUsername", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.NickName, gameObject.GetPhotonView().ViewID);
     }
 
     public void SendChat()
@@ -128,12 +127,24 @@ public class LobbyController : MonoBehaviourPunCallbacks
             boardTypes[i] = chances[Random.Range(0, 20)];
         }
 
+        for (int i = 0; i < boardTypes.Length / 100; i++)
+        {
+            int[] section = new int[100];
+
+            for (int j = 0; j < 100; j++)
+            {
+                section[j] = boardTypes[(i * 100) + j];
+            }
+
+            gameObject.GetPhotonView().RPC("AddToGrid", RpcTarget.All, section);
+        }
+
         for (int i = 0; i < PhotonNetwork.CurrentRoom.Players.Keys.Count; i++)
         {
             playerIDs[i] = new List<int>(PhotonNetwork.CurrentRoom.Players.Keys)[i];
         }
 
-        gameObject.GetPhotonView().RPC("BuildGrid", RpcTarget.All, boardTypes, playerIDs);
+        gameObject.GetPhotonView().RPC("BuildGrid", RpcTarget.All, playerIDs, Sizes[BoardSizes.value]);
 
         for (int i = 0; i < BasePositions.Length; i++)
         {
@@ -166,7 +177,16 @@ public class LobbyController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void BuildGrid(int[] boardTypes, int[] playerIDs)
+    public void AddToGrid(int[] boardTypes)
+    {
+        for (int i = 0; i < boardTypes.Length; i++)
+        {
+            BoardTypes.Add(boardTypes[i]);
+        }
+    }
+
+    [PunRPC]
+    public void BuildGrid(int[] playerIDs, int boardSize)
     {
         UIControl.Instance.gameObject.SetActive(true);
         PlayerInteraction.Instance.gameObject.SetActive(true);
@@ -174,7 +194,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
         int num = 0;
         int numCastles = 0;
 
-        for (int i = 0; i < Sizes[BoardSizes.value]; i++)
+        for (int i = 0; i < boardSize; i++)
         {
             float zPos;
 
@@ -187,17 +207,17 @@ public class LobbyController : MonoBehaviourPunCallbacks
                 zPos = 2.59f;
             }
 
-            for (int j = 0; j < Sizes[BoardSizes.value]; j++)
+            for (int j = 0; j < boardSize; j++)
             {
                 int hexViewID;
 
-                if (boardTypes[num] == 1)
+                if (BoardTypes[num] == 1)
                 {
                     hexViewID = num;
                     GameManager.Instance.Board[num] = Instantiate(HexForest, new Vector3(i * 4.49f, 0, zPos + (j * 5)), Quaternion.identity).GetComponent<HexPos>();
                     GameManager.Instance.Board[num].ID = num;
                 }
-                else if (boardTypes[num] == 2)
+                else if (BoardTypes[num] == 2)
                 {
                     hexViewID = num;
                     GameManager.Instance.Board[num] = Instantiate(HexHills, new Vector3(i * 4.49f, 0, zPos + (j * 5)), Quaternion.identity).GetComponent<HexPos>();
@@ -212,9 +232,9 @@ public class LobbyController : MonoBehaviourPunCallbacks
 
                 if (numCastles < playerIDs.Length)
                 {
-                    if (i == 4 || i == boardTypes.Length - 5)
+                    if (i == 4 || i == BoardTypes.Count - 5)
                     {
-                        if (j == 4 || j == boardTypes.Length - 5)
+                        if (j == 4 || j == BoardTypes.Count - 5)
                         {
                             BasePositions[numCastles] = hexViewID;
                             numCastles += 1;

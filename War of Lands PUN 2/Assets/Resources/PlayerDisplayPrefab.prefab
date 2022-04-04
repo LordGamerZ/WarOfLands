@@ -302,6 +302,7 @@ MonoBehaviour:
   MyTeamNum: {fileID: 6963296236526188322}
   TeamNum: {fileID: 4391093381090909906}
   IsMine: 0
+  LobbyControl: {fileID: 0}
 --- !u!1 &674076791342104478
 GameObject:
   m_ObjectHideFlags: 0

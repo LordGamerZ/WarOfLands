@@ -218,7 +218,7 @@ PrefabInstance:
     - target: {fileID: 7237402906843131641, guid: e809718a10bce0c4f9e1b6f35df26a4e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7237402906843131641, guid: e809718a10bce0c4f9e1b6f35df26a4e,
         type: 3}
@@ -372,6 +372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebe5053aae5aef6498f3340b67205305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerIDs: 
   TeamNum: 0
   MyColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &213862607
@@ -461,7 +462,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963812507
 GameObject:
@@ -513,7 +514,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &986624266
 GameObject:
@@ -734,7 +735,7 @@ PrefabInstance:
     - target: {fileID: 2846221091334297309, guid: 07ee45de2c2546f419e359c56379f7ab,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2846221091334297309, guid: 07ee45de2c2546f419e359c56379f7ab,
         type: 3}
